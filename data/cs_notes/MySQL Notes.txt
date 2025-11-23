@@ -1,0 +1,621 @@
+﻿SQL: Tables with fixed rows and columns, ex: Oracles, MySQL, Microsoft SQL Server and PostgreSQL
+NoSQL: Document: JSON documents, Key-value: key-value pairs, Wide-column: tables with rows and dynamic columns, Graph: nodes. Document: MongoDB and CouchDB, Key-value: Redis and DynamoDB, Wide-column: Cassandra and HBase, Graph: Neo4j and Amazon Neptune. 
+
+
+SQL - MySQL: Database → Tables → Rows → Columns
+NoSQL Example - MongoDB: Database → Collections → Documents → Fields
+
+
+- primary key constant basically uniquely identifies each record in a table, it must contain unique values and a table can only have a single primary key
+
+
+-foreign key is related to primary key, a foreign key is a field in one table referring to the primary key in another table
+
+
+mysql> CREATE TABLE EMPLOYEE (
+    -> EmpID int NOT NULL,
+    -> FirstName varchar(255),
+    -> LastName varchar(255),
+    -> EmpDept varchar(255) DEFAULT 'Operations'
+    -> );
+
+
+DESC EMPLOYEE;
+
+
+mysql> SHOW DATABASES;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| jwt_youtube_db     |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.007 sec)
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| jwt_youtube_db     |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.009 sec)
+mysql> use information_schema
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+mysql> CREATE TABLE EMPLOYEE (
+    -> EmpID int, 
+    -> FirstName varchar(255),
+    -> LastName varchar(255),
+    -> EmpAGE int, 
+    -> EmpZone varchar(255)
+    -> );
+ERROR 1044 (42000): Access denied for user 'root'@'localhost' to database 'information_schema'
+mysql> CREATE TABLE EMPLOYEE ( EmpID int,  FirstName varchar(255), LastName varchar(255), EmpAGE int,  EmpZone varchar(255) );
+ERROR 1044 (42000): Access denied for user 'root'@'localhost' to database 'information_schema'
+mysql> USE jwt_youtube_db;
+Reading table information for completion of table and column names
+You can turn off this feature to get a quicker startup with -A
+Database changed
+mysql> CREATE TABLE EMPLOYEE (
+    ->     EmpID int, 
+    ->     FirstName varchar(255),
+    ->     LastName varchar(255),
+    ->     EmpAGE int, 
+    ->     EmpZone varchar(255)
+    -> );
+Query OK, 0 rows affected (0.015 sec)
+mysql> DESC EMPLOYEE;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| EmpID     | int          | YES  |     | NULL    |       |
+| FirstName | varchar(255) | YES  |     | NULL    |       |
+| LastName  | varchar(255) | YES  |     | NULL    |       |
+| EmpAGE    | int          | YES  |     | NULL    |       |
+| EmpZone   | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+5 rows in set (0.004 sec)
+mysql> show databases
+    -> ^C^C
+^C
+mysql> 
+mysql> show databases;
++--------------------+
+| Database           |
++--------------------+
+| information_schema |
+| jwt_youtube_db     |
+| mysql              |
+| performance_schema |
+| sys                |
++--------------------+
+5 rows in set (0.001 sec)
+mysql> create database amitdb;
+Query OK, 1 row affected (0.005 sec)
+mysql> use amitdb;
+Database changed
+mysql> create table Employee(
+    -> EmpID int, 
+    -> FirstName varchar(255),
+    -> LastName varchar(255),
+    -> EmpAge int, 
+    -> EmpZone varchar(255)
+    -> );
+Query OK, 0 rows affected (0.013 sec)
+mysql> DESC EMPLOYEE;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| EmpID     | int          | YES  |     | NULL    |       |
+| FirstName | varchar(255) | YES  |     | NULL    |       |
+| LastName  | varchar(255) | YES  |     | NULL    |       |
+| EmpAge    | int          | YES  |     | NULL    |       |
+| EmpZone   | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+5 rows in set (0.004 sec)
+mysql> INSERT INTO EMPLOYEE(EmpID, FirstName, LastName, EmpAGE, EmpZONE) VALUES(1, 'Jack', 'Sparrow', 25, 'North');
+Query OK, 1 row affected (0.005 sec)
+mysql> SELECT * FROM EMPLOYEE;
++-------+-----------+----------+--------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone |
++-------+-----------+----------+--------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |
++-------+-----------+----------+--------+---------+
+1 row in set (0.001 sec)
+mysql> INSERT INTO EMPLOYEE(EmpID, FirstName, LastName, EmpAGE, EmpZONE) VALUES(2, 'Tom', 'Hanks', 25, 'South');
+Query OK, 1 row affected (0.004 sec)
+mysql> INSERT INTO EMPLOYEE(EmpID, FirstName, LastName, EmpAGE, EmpZONE) VALUES(2, 'Brad', 'Pitt', 30, 'West');
+Query OK, 1 row affected (0.002 sec)
+mysql> INSERT INTO EMPLOYEE(EmpID, FirstName, LastName, EmpAGE, EmpZONE) VALUES(3, 'Emma', 'Stone', 27, 'East');
+Query OK, 1 row affected (0.002 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> 
+    -> 
+    -> 
+    -> 
+    -> 
+    -> 
+^C
+mysql> SELECT * FROM EMPLOYEE;
++-------+-----------+----------+--------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone |
++-------+-----------+----------+--------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |
+|     2 | Tom       | Hanks    |     25 | South   |
+|     2 | Brad      | Pitt     |     30 | West    |
+|     3 | Emma      | Stone    |     27 | East    |
++-------+-----------+----------+--------+---------+
+4 rows in set (0.001 sec)
+mysql> SELECT LastName FROM EMPLOYEE;
++----------+
+| LastName |
++----------+
+| Sparrow  |
+| Hanks    |
+| Pitt     |
+| Stone    |
++----------+
+4 rows in set (0.001 sec)
+mysql> SELECT EmpAGE, EmpZONE FROM EMPOLYEE;
+ERROR 1146 (42S02): Table 'amitdb.empolyee' doesn't exist
+mysql> SELECT EmpAGE, EmpZONE FROM EMPOLOYEE;
+ERROR 1146 (42S02): Table 'amitdb.empoloyee' doesn't exist
+mysql> SELECT EmpAGE, EmpZONE FROM EMPLOYEE;
++--------+---------+
+| EmpAGE | EmpZONE |
++--------+---------+
+|     25 | North   |
+|     25 | South   |
+|     30 | West    |
+|     27 | East    |
++--------+---------+
+4 rows in set (0.001 sec)
+mysql> SELECT EmpAGE FROM EMPLOYEE;
++--------+
+| EmpAGE |
++--------+
+|     25 |
+|     25 |
+|     30 |
+|     27 |
++--------+
+4 rows in set (0.001 sec)
+mysql> SELECT DISTINCT EmpAGE FROM EMPLOYEE;
++--------+
+| EmpAGE |
++--------+
+|     25 |
+|     30 |
+|     27 |
++--------+
+3 rows in set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE 
+    -> WHERE EmpAGE=25;
++-------+-----------+----------+--------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone |
++-------+-----------+----------+--------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |
+|     2 | Tom       | Hanks    |     25 | South   |
++-------+-----------+----------+--------+---------+
+2 rows in set (0.001 sec)
+mysql> USE amitdb;
+Database changed
+mysql> CREATE TABLE EMPLOYEE(
+    -> EmpID int NOT NULL,
+    ->     FirstName varchar(255),
+    ->     LastName varchar(255),
+    ->     EmpAge int
+    ->     );
+ERROR 1050 (42S01): Table 'employee' already exists
+mysql> CREATE TABLE EMPLOYEE (
+    -> EmpID int NOT NULL,
+    -> FirstName varchar(255),
+    -> LastName varchar(255),
+    -> EmpZone varchar(255),
+    -> PRIMARY KEY (EmpID)
+    -> );
+ERROR 1050 (42S01): Table 'employee' already exists
+mysql> CREATE TABLE EMPLOYEE ( EmpID int NOT NULL, FirstName varchar(255), LastName varchar(255), EmpZone varchar(255), PRIMARY KEY (EmpID) );
+ERROR 1050 (42S01): Table 'employee' already exists
+mysql> CREATE TABLE EMPLOYEE (
+    -> EmpID int NOT NULL,
+    -> FirstName varchar(255),
+    -> LastName varchar(255),
+    -> EmpDept varchar(255) DEFAULT 'Operations'
+    -> );
+ERROR 1050 (42S01): Table 'employee' already exists
+mysql> DESC EMPLOYEE;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| EmpID     | int          | YES  |     | NULL    |       |
+| FirstName | varchar(255) | YES  |     | NULL    |       |
+| LastName  | varchar(255) | YES  |     | NULL    |       |
+| EmpAge    | int          | YES  |     | NULL    |       |
+| EmpZone   | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+5 rows in set (0.004 sec)
+mysql> INSERT INTO EMPLOYEE(EmpID, FirstName, LastName, EmpAge)
+    -> VALUES (1, 'Tom', 'Hanks', 25);
+Query OK, 1 row affected (0.036 sec)
+mysql> SELECT * FROM EMPLOYEE;
++-------+-----------+----------+--------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone |
++-------+-----------+----------+--------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |
+|     2 | Tom       | Hanks    |     25 | South   |
+|     2 | Brad      | Pitt     |     30 | West    |
+|     3 | Emma      | Stone    |     27 | East    |
+|     1 | Emma      | Stone    |   NULL | NULL    |
+|     1 | Tom       | Hanks    |     25 | NULL    |
++-------+-----------+----------+--------+---------+
+6 rows in set (0.004 sec)
+mysql> DESC EMPLOYEE
+    -> 
+    -> 
+^C
+mysql> 
+mysql> DESC EMPLOYEE;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| EmpID     | int          | YES  |     | NULL    |       |
+| FirstName | varchar(255) | YES  |     | NULL    |       |
+| LastName  | varchar(255) | YES  |     | NULL    |       |
+| EmpAge    | int          | YES  |     | NULL    |       |
+| EmpZone   | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+5 rows in set (0.035 sec)
+mysql> ALTER TABLE EMPLOYEE
+    -> ADD COLUMN EmpDEPT varchar(255);
+Query OK, 0 rows affected (0.038 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> DESC EMPLOYEE;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| EmpID     | int          | YES  |     | NULL    |       |
+| FirstName | varchar(255) | YES  |     | NULL    |       |
+| LastName  | varchar(255) | YES  |     | NULL    |       |
+| EmpAge    | int          | YES  |     | NULL    |       |
+| EmpZone   | varchar(255) | YES  |     | NULL    |       |
+| EmpDEPT   | varchar(255) | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+6 rows in set (0.006 sec)
+mysql> ALTER TABLE EMPLOYEE
+    -> ALTER COLUMN EmpDEPT int;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'int' at line 2
+mysql> ALTER TABLE EMPLOYEE 
+    -> ALTER COLUMN EmpDEPT int;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'int' at line 2
+mysql> ALTER TABLE EMPLOYEE MODIFY COLUMN EmpDEPT int;
+Query OK, 6 rows affected (0.033 sec)
+Records: 6  Duplicates: 0  Warnings: 0
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE EmpAGE=25 AND EmpZONE= 'North';
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
++-------+-----------+----------+--------+---------+---------+
+1 row in set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE EmpZONE='West' OR EmpZone='East';
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     2 | Brad      | Pitt     |     30 | West    |    NULL |
+|     3 | Emma      | Stone    |     27 | East    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+2 rows in set (0.004 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE NOT EmpAGE=30;
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     2 | Tom       | Hanks    |     25 | South   |    NULL |
+|     3 | Emma      | Stone    |     27 | East    |    NULL |
+|     1 | Tom       | Hanks    |     25 | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+4 rows in set (0.002 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE EmpZONE IN('North', 'East');
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     3 | Emma      | Stone    |     27 | East    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+2 rows in set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE EmpZONE NOT IN ('North', 'East');
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     2 | Tom       | Hanks    |     25 | South   |    NULL |
+|     2 | Brad      | Pitt     |     30 | West    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+2 rows in set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE FirstName LIKE 'e%';
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     3 | Emma      | Stone    |     27 | East    |    NULL |
+|     1 | Emma      | Stone    |   NULL | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+2 rows in set (0.003 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE LastName LIKE 'S%';
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     3 | Emma      | Stone    |     27 | East    |    NULL |
+|     1 | Emma      | Stone    |   NULL | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+3 rows in set (0.003 sec)
+mysql> SELECT * FROM EMPLOYEE;
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     2 | Tom       | Hanks    |     25 | South   |    NULL |
+|     2 | Brad      | Pitt     |     30 | West    |    NULL |
+|     3 | Emma      | Stone    |     27 | East    |    NULL |
+|     1 | Emma      | Stone    |   NULL | NULL    |    NULL |
+|     1 | Tom       | Hanks    |     25 | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+6 rows in set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE EmpZONE LIKE '%h';
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     2 | Tom       | Hanks    |     25 | South   |    NULL |
++-------+-----------+----------+--------+---------+---------+
+2 rows in set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE EmpZONE LIKE '__t';
+Empty set (0.002 sec)
+mysql> SELECT * FROM EMPLOYEE WHERE EmpZONE LIKE '_t';
+Empty set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> WHERE EmpAGE BETWEEN 25 AND 30;
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     2 | Tom       | Hanks    |     25 | South   |    NULL |
+|     2 | Brad      | Pitt     |     30 | West    |    NULL |
+|     3 | Emma      | Stone    |     27 | East    |    NULL |
+|     1 | Tom       | Hanks    |     25 | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+5 rows in set (0.002 sec)
+mysql> SELECT FirstName, LastName, EmpAGE,
+    -> CASE
+    -> WHEN EmpAGE > 25 THEN 'Employee with experience. Eligible for Sr. profile'
+    -> WHEN EmpAGE = 25 THEN 'Employee is mid-experienced level. Eligible!'
+    -> ELSE 'Freshers... new to the company'
+    -> END AS Eligibility
+    -> FROM EMPLOYEE;
++-----------+----------+--------+----------------------------------------------------+
+| FirstName | LastName | EmpAGE | Eligibility                                        |
++-----------+----------+--------+----------------------------------------------------+
+| Jack      | Sparrow  |     25 | Employee is mid-experienced level. Eligible!       |
+| Tom       | Hanks    |     25 | Employee is mid-experienced level. Eligible!       |
+| Brad      | Pitt     |     30 | Employee with experience. Eligible for Sr. profile |
+| Emma      | Stone    |     27 | Employee with experience. Eligible for Sr. profile |
+| Emma      | Stone    |   NULL | Freshers... new to the company                     |
+| Tom       | Hanks    |     25 | Employee is mid-experienced level. Eligible!       |
++-----------+----------+--------+----------------------------------------------------+
+6 rows in set (0.002 sec)
+mysql> SELECT SUM(EmpAGE)
+    -> FROM EMPLOYEE;
++-------------+
+| SUM(EmpAGE) |
++-------------+
+|         132 |
++-------------+
+1 row in set (0.005 sec)
+mysql> SELECT AVG(EmpAGE)
+    -> FROM EMPLOYEE;
++-------------+
+| AVG(EmpAGE) |
++-------------+
+|     26.4000 |
++-------------+
+1 row in set (0.002 sec)
+mysql> SELECT COUNT(EmpAGE)
+    -> FROM EMPLOYEE
+    -> WHERE EmpAGE=25;
++---------------+
+| COUNT(EmpAGE) |
++---------------+
+|             3 |
++---------------+
+1 row in set (0.002 sec)
+mysql> SELECT COUNT(*)
+    -> FROM EMPLOYEE;
++----------+
+| COUNT(*) |
++----------+
+|        6 |
++----------+
+1 row in set (0.007 sec)
+mysql> SELECT MAX(EmpAGE) AS LargestAGE
+    -> FROM EMPLOYEE;
++------------+
+| LargestAGE |
++------------+
+|         30 |
++------------+
+1 row in set (0.002 sec)
+mysql> SELECT MIN(EmpAGE) AS SmallestAge
+    -> FROM EMPLOYEE;
++-------------+
+| SmallestAge |
++-------------+
+|          25 |
++-------------+
+1 row in set (0.001 sec)
+mysql> UPDATE EMPLOYEE
+    -> SET EmpAGE=24
+    -> WHERE EmpID=3;
+Query OK, 1 row affected (0.008 sec)
+Rows matched: 1  Changed: 1  Warnings: 0
+mysql> SELECT * FROM EMPLOYEE;
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     2 | Tom       | Hanks    |     25 | South   |    NULL |
+|     2 | Brad      | Pitt     |     30 | West    |    NULL |
+|     3 | Emma      | Stone    |     24 | East    |    NULL |
+|     1 | Emma      | Stone    |   NULL | NULL    |    NULL |
+|     1 | Tom       | Hanks    |     25 | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+6 rows in set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE
+    -> 
+^C
+mysql> SELECT * FROM EMPLOYEE;
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     2 | Tom       | Hanks    |     25 | South   |    NULL |
+|     2 | Brad      | Pitt     |     30 | West    |    NULL |
+|     3 | Emma      | Stone    |     24 | East    |    NULL |
+|     1 | Emma      | Stone    |   NULL | NULL    |    NULL |
+|     1 | Tom       | Hanks    |     25 | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+6 rows in set (0.001 sec)
+mysql> UPDATE EMPLOYEE
+    -> SET EmpAGE=26
+    -> WHERE FirstName='Emma';
+Query OK, 2 rows affected (0.005 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+mysql> DELETE FROM EMPLOYEE
+    -> WHERE EmpZONE='South';
+Query OK, 1 row affected (0.005 sec)
+mysql> SELECT * FROM EMPLOYEE;
++-------+-----------+----------+--------+---------+---------+
+| EmpID | FirstName | LastName | EmpAge | EmpZone | EmpDEPT |
++-------+-----------+----------+--------+---------+---------+
+|     1 | Jack      | Sparrow  |     25 | North   |    NULL |
+|     2 | Brad      | Pitt     |     30 | West    |    NULL |
+|     3 | Emma      | Stone    |     26 | East    |    NULL |
+|     1 | Emma      | Stone    |     26 | NULL    |    NULL |
+|     1 | Tom       | Hanks    |     25 | NULL    |    NULL |
++-------+-----------+----------+--------+---------+---------+
+5 rows in set (0.001 sec)
+mysql> DESC EMPLOYEE;
++-----------+--------------+------+-----+---------+-------+
+| Field     | Type         | Null | Key | Default | Extra |
++-----------+--------------+------+-----+---------+-------+
+| EmpID     | int          | YES  |     | NULL    |       |
+| FirstName | varchar(255) | YES  |     | NULL    |       |
+| LastName  | varchar(255) | YES  |     | NULL    |       |
+| EmpAge    | int          | YES  |     | NULL    |       |
+| EmpZone   | varchar(255) | YES  |     | NULL    |       |
+| EmpDEPT   | int          | YES  |     | NULL    |       |
++-----------+--------------+------+-----+---------+-------+
+6 rows in set (0.005 sec)
+mysql> DELETE FROM EMPLOYEE;
+Query OK, 5 rows affected (0.004 sec)
+mysql> SELECT * FROM EMPLOYEE;
+Empty set (0.001 sec)
+mysql> SELECT * FROM EMPLOYEE;
+Empty set (0.001 sec)
+
+
+-SELECT * FROM EMPLOYEE;
+        → ORDER By EmpAGE;
+
+
+-SELECT * FROM EMPLOYEE;
+        → ORDER By EmpAGE DESC;
+
+
+-SELECT * FROM EMPLOYEE;
+        → LIMIT 3;
+
+
+-SELECT EmpAGE AS AGE_of_EMPLOYEES
+        → FROM EMPLOYEE;
+MYSQL COMMANDS (the ones you actually type every day)
+====================================================
+1. Connection
+mysql -u root -p
+USE database_name;
+SHOW DATABASES;
+SHOW TABLES;
+DESC table_name;
+2. Database
+CREATE DATABASE mydb CHARACTER SET utf8mb4;
+DROP DATABASE mydb;
+3. Table DDL
+CREATE TABLE users (
+  id BIGINT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(100) NOT NULL,
+  email VARCHAR(255) UNIQUE,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+DROP TABLE users;
+TRUNCATE TABLE users;
+ALTER TABLE users ADD COLUMN phone VARCHAR(20);
+ALTER TABLE users DROP COLUMN phone;
+4. Data DML
+INSERT INTO users (name, email) VALUES ('John', 'j@x.com');
+INSERT INTO users (name) VALUES ('A'), ('B');
+SELECT * FROM users WHERE age > 25 ORDER BY age DESC LIMIT 10;
+SELECT COUNT(*) FROM users;
+UPDATE users SET age = age + 1 WHERE id = 5;
+DELETE FROM users WHERE id = 10;
+5. JOINs
+SELECT o.id, u.name FROM orders o
+INNER JOIN users u ON o.user_id = u.id;
+LEFT JOIN users u ON o.user_id = u.id;
+6. Aggregation
+SELECT country, COUNT(*), AVG(age) FROM users GROUP BY country;
+SELECT DATE(created_at) AS day, COUNT(*) FROM orders
+GROUP BY day HAVING COUNT(*) > 100;
+7. Indexes
+CREATE INDEX idx_email ON users(email);
+CREATE UNIQUE INDEX idx_uniq_email ON users(email);
+SHOW INDEX FROM users;
+DROP INDEX idx_email ON users;
+8. Users & Privileges
+CREATE USER 'app'@'%' IDENTIFIED BY 'strong-pass';
+GRANT ALL ON mydb.* TO 'app'@'%';
+GRANT SELECT, INSERT, UPDATE ON mydb.* TO 'reader'@'%';
+SHOW GRANTS FOR 'app'@'%';
+FLUSH PRIVILEGES;
+9. Handy
+SELECT VERSION();
+SELECT NOW();
+SOURCE /path/to/dump.sql;
+mysqldump -u root -p mydb > backup.sql   (from terminal)
+mysql -u root -p mydb < backup.sql       (import)
+—----------------------------------------------------------------------------------------------------------------------------
+JOINS
+-Inner Join
+-Left Join
+-Right Join
+-Full Join (Not Supported)
+SELECT EMPLOYEE.EmpID,DEPARTMENT.DeptName
+→ FROM EMPLOYEE
+→ INNER JOIN DEPARTMENT ON EMPLOYEE.DeptID = DEPARTMENT.DeptID;
+
+
+-A FOREIGN KEY is a field in one table referring to the PRIMARY KEY in another table.

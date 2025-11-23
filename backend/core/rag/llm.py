@@ -40,11 +40,18 @@ def build_prompt_from_hits(
     total_chars = 0
 
     for idx, hit in enumerate(hits):
-        doc_text = hit.get("document") or ""
+        # Some callers use "text" instead of "document" for the chunk contents
+        doc_text = hit.get("document") or hit.get("text") or ""
         meta = hit.get("metadata") or {}
 
         source = meta.get("source", "unknown")
-        file = meta.get("file", meta.get("path", "unknown"))
+        file = (
+            meta.get("file")
+            or meta.get("filename")
+            or meta.get("path")
+            or meta.get("filepath")
+            or "unknown"
+        )
         chunk_index = meta.get("chunk_index", idx)
 
         header = f"[{idx}] (source={source}, file={file}, chunk={chunk_index})"

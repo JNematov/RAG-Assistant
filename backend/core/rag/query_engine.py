@@ -26,10 +26,12 @@ def query_sources(source: SourceType, question: str, k: int = 5) -> List[Dict]:
         ids = r.get("ids", [[]])[0]
 
         for i in range(len(docs)):
+            # Provide both "text" and "document" keys for compatibility with prompt builders.
             hits.append({
                 "collection": label,
                 "id": ids[i],
                 "text": docs[i],
+                "document": docs[i],
                 "metadata": metas[i],
                 "score": scores[i],
             })

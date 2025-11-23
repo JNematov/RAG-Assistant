@@ -3,9 +3,8 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
 import json
-import json
+import logging
 import requests
-from typing import Any, Dict
 
 from backend.core.rag.llm_runner import ask_ollama
 from backend.core.rag.settings import (
@@ -30,6 +29,7 @@ class RouteDecision:
 
 
 llm_router = LLMService()  # can pass backend="ollama" explicitly if you want
+logger = logging.getLogger(__name__)
 
 
 def _safe_parse_json(raw: str) -> Dict[str, Any]:
@@ -179,20 +179,10 @@ def _route_with_ollama(message: str) -> Dict[str, Any]:
     prompt = _build_routing_prompt(message)
     raw = ask_ollama(prompt, model=ROUTER_MODEL)
 
-    # raw is a JSON string (we asked the model to return JSON)
-    try:
-        data = json.loads(raw)
-    except json.JSONDecodeError:
-        # Fallback: minimal route if the model messed up formatting
-        return {
-            "operation": "qa",
-            "primary_source": "notes",
-            "secondary_sources": [],
-            "arguments": {},
-            "reasoning": "Fallback route due to invalid JSON.",
-            "search_strategy": "Search notes first.",
-            "confidence": 0.4,
-        }
+    # Be resilient to slightly malformed JSON from the model
+    data = _safe_parse_json(raw)
+    if data.get("reasoning", "").startswith("Fallback routing"):
+        logger.warning("Router JSON parse issue; raw response: %s", raw)
     return data
 
 
