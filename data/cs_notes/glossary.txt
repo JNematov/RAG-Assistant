@@ -1,0 +1,194 @@
+# Linux Command Glossary
+# ======================
+
+### Basic Navigation
+ls        - list directory contents
+    -l  long listing
+    -a  show hidden files
+    -h  human-readable sizes
+    -t  sort by modification time
+    -r  reverse sort
+    Example: ls -lah, ls -ltr
+
+cd        - change directory
+pwd       - print working directory
+mkdir     - make directory
+rmdir     - remove empty directory
+rm        - remove files
+    -r  recursive (dirs)
+    -f  force (no prompt)
+    Example: rm -rf dir/
+
+### Files and Viewing
+cat       - view contents of a file
+less      - scroll through file content
+head/tail - show beginning or end of file
+    head -n N   first N lines
+    tail -n N   last N lines
+    tail -f     follow file growth (logs)
+touch     - create an empty file or update timestamp
+cp/mv     - copy or move files
+
+find      - recursively search for files/directories
+    -type f      files only
+    -name "*.txt" name pattern
+    -maxdepth N  limit depth
+    -mtime -1    modified <1 day ago
+    -size +10M   larger than 10 MiB
+    -print0      NUL-terminated output (safe for spaces)
+    -exec CMD {} + execute CMD on results
+    Examples:
+        find . -type f -name "*.log"
+        find . -type f -mtime -1 -exec grep -H "ERROR" {} +
+
+### Text Search and Redirection
+grep      - search text by pattern
+    -r  recursive
+    -i  case-insensitive
+    -n  show line numbers
+    -H  show filename
+    -l  list filenames only
+    -o  show only matching text
+    --include="*.txt"  restrict to pattern
+    Examples:
+        grep -rni --include="*.txt" "error" .
+        grep -rl "error" .
+
+| (pipe)  - send output of one command into another
+>         - redirect output to a new file (overwrite)
+>>        - append output to an existing file
+tee       - display and write output simultaneously
+    -a  append mode
+    Example: cmd | tee -a log.txt
+xargs     - build command lines from stdin
+    -0  read NUL-separated input
+    -I{}  placeholder for item
+    Examples:
+        find . -type f -print0 | xargs -0 wc -l
+        printf '%s\n' a b | xargs -I{} echo file:{}
+
+### Permissions & Ownership
+chmod     - change permissions
+    Numeric: 644 (rw-r--r--) · 755 (rwxr-xr-x)
+    Symbolic: u/g/o +/- r/w/x
+    Examples: chmod 755 script.sh, chmod u+rx,g-r file
+chown     - change owner/group (user:group)
+    Example: sudo chown user:group file
+ls -l     - show permission bits
+
+### System Information
+whoami    - display current username
+hostname  - display machine name
+date      - display current date and time
+    Format codes: %F = YYYY-MM-DD, %T = HH:MM:SS
+    Example: date "+%F %T"
+uptime    - how long the system has been running
+df -h     - disk usage in human-readable format
+free -h   - memory usage in human-readable format
+which     - show full path to executable used
+whereis   - locate binary/source/man page for command
+journalctl- view logs collected by systemd
+    -u <service>   - view logs for specific unit (eg. cron.service)
+    --since "1 hour ago" filter logs by time
+    -f       gollow logs in real time (like tail -f)
+logger "message"   - write custom messages to syslog
+dmesg     - print kernel messages (hardware, boot)
+vmstat /iostat     - show memory, I/O and CPU stats
+lsof      - list open files and which processes use them     
+
+### Processes
+ps aux    - list all running processes
+    --sort=-%cpu  sort by CPU
+    --sort=-%mem  sort by memory
+top       - live process monitor (q to quit)
+htop      - enhanced top (install : sudo apt install htop)
+jobs      - lists background jobs
+bg/fg     - move jobs to background/foreground 
+kill PID  - terminate a process by ID
+killall   - terminate by name
+systemctl status <service>  - show service status
+systemctl start|stop|restart <service>	- check or control daemons
+nice/renice        - adjust CPU priority
+head/tail - limit displayed lines
+jobs      - background tasks in current shell
+bg %1     - resume job #1 in background
+fg %1     - bring job #1 in foreground
+kill -9 PID force  - kill process by PID
+pkill name- kill process by name
+
+
+### Scripting and Variables
+#!/bin/bash - interpreter directive (shebang)
+$USER, $HOME, $PWD - common environment variables
+$(command) - run a command inside another
+&&         - run next command only if previous succeeds
+||         - run next command only if previous fails
+#          - comment
+
+### Useful Shortcuts
+Ctrl+C     - stop current process
+Ctrl+L     - clear terminal
+Ctrl+Z     - suspend foreground job
+Tab        - auto-complete command or path
+history    - view previous commands
+
+### Environment Variables
+env        - list all environment variables
+printenv   - print value of specific variable
+export     - make variable available to child processes
+$PATH      - directories searched for executables
+source     - re-execute a file (e.g., ~/.bashrc) in current shell
+
+### Configuration Files
+.bashrc         - runs for interactive shells; set variables/aliases permanently
+.bash_profile   - runs for login shells (first terminal session)
+
+### Customization
+alias      - create a shortcut (alias ll='ls -la')
+unalias    - remove a shortcut (unalias ll)
+
+### Text Processing
+sed        - stream editor for filtering/transforming text
+    s/old/new/g   replace all
+    -n '5,10p'    print lines 5–10
+    -E            use extended regex
+    Examples:
+        sed -E 's/^#//' file
+        sed -n '1,20p' file
+
+awk        - text processing language for structured data
+    -F:   set delimiter
+    $1,$2,…  columns; $NF last column
+    Examples:
+        awk '{print $1, $3}' file
+        awk -F: '{print $1}' /etc/passwd
+
+cut        - extract specific fields or characters
+    -d':'  delimiter
+    -f1,3  field numbers
+    Example: cut -d':' -f1 /etc/passwd
+
+sort       - sort lines
+    -n  numeric
+    -r  reverse
+    -u  unique
+    Example: sort -u names.txt
+uniq       - remove consecutive duplicate lines
+    -c  count duplicates
+    Example: sort file | uniq -c
+wc         - count lines, words, bytes
+    -l  lines
+    -w  words
+    -c  bytes
+    Example: wc -l file.txt
+
+
+### Scheduling & Automation
+at         - schedule a one-time job
+    Example: at now + 1 minute -f script.h
+atq        - lists jobs; atrm <ID> remove
+cron       - recurring job scheduler
+crontab    - list of recurring jobs
+    -e  edit jobs
+    -l  lists jobs
+sleep N    - pause execution for N seconds
