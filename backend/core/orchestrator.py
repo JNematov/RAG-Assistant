@@ -211,8 +211,19 @@ def _map_sources_to_rag_keys(route: RouteDecision) -> List[str]:
     #   - notes  -> "cs"
     #   - documents / general -> "general"
     #   - all -> ["cs", "general"]
-    primary = (route.primary_source or "notes").lower()
-    secondary = [s.lower() for s in (route.secondary_sources or [])]
+    # Defensive handling for primary_source (LLM might output list)
+    primary_raw = route.primary_source or "notes"
+    if isinstance(primary_raw, list):
+        logger.warning(f"Malformed primary_source (list): {primary_raw}; using first element")
+        primary_raw = primary_raw[0] if primary_raw else "notes"
+    primary = str(primary_raw).lower()
+  
+    # Defensive handling for secondary_sources (unlikely, but safe)
+    secondary_raw = route.secondary_sources or []
+    if isinstance(secondary_raw, str):
+        logger.warning(f"Malformed secondary_sources (str): {secondary_raw}; promoting to list")
+        secondary_raw = [secondary_raw]
+    secondary = [s.lower() for s in secondary_raw]
 
     rag_keys: List[str] = []
 
@@ -256,7 +267,7 @@ def _build_operation_prompt(message: str, hits: List[Any], operation: str | None
     op = (operation or "qa").lower()
 
     # Right now, both paths use the same underlying builder, but you could
-# tweak the instructions depending on op.~
+    # tweak the instructions depending on op.
     if op == "summarize":
         # You could add explicit "summarize these snippets" instructions here.
         return build_prompt_from_hits(
@@ -264,8 +275,18 @@ def _build_operation_prompt(message: str, hits: List[Any], operation: str | None
             hits,
         )
 
-    # Default: QA style
-    return build_prompt_from_hits(message, hits)
+    # Default: QA style with STRICT exact-recall instructions
+    # Prefix to enforce quoting only—no additions, examples, or external knowledge
+    strict_prefix = """
+You are a precise note-retriever. Respond ONLY with exact text from the provided sources.
+- Quote directly from the most relevant snippet(s).
+- Do NOT add explanations, examples, options, or knowledge from outside the sources.
+- If the exact match is short (e.g., a single line), return it verbatim without expansion.
+- Format: Start with the quoted text, then cite [source_id] if multiple.
+- If no exact match, say "Exact description not found in notes."
+"""
+
+    return strict_prefix + build_prompt_from_hits(message, hits)
 
 def _prefetch_hits_for_message(message: str) -> List[Any]:
     """

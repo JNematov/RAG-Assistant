@@ -156,6 +156,8 @@ Analyze the user's message and decide:
    - "documents"   -> PDFs, long-form content
    - "all"         -> search all sources
 
+SPECIAL RULE FOR NOTES-ONLY QUERIES: If the query mentions "my notes", "i wrote", "in my notes", or refers to specific personal content (e.g., "that i wrote in my linux notes"), set primary_source to "notes" and secondary_sources to an empty list []. Do not add any secondary sources or "all" in these cases—stick strictly to personal notes for exact recall.    
+
 3. Any ARGUMENTS needed:
    - e.g. for "email_latest", extract a "sender" field
 

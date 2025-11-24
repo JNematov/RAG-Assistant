@@ -72,6 +72,10 @@ You MUST use ONLY the context snippets below to answer the question.
 If the answer is unclear or not present in the context, say that you are unsure
 and do NOT hallucinate.
 
+For queries asking for 'exact' descriptions or direct quotes from notes, respond with verbatim text from the most relevant snippet(s) only. Do not add explanations, examples, options, or external knowledge—quote precisely and cite the source index.
+
+If the query specifies an 'exact' command description (e.g., 'cd command'), extract and quote ONLY the single line matching the command pattern (e.g., starting with 'cd -'). Do not include adjacent lines, sections, or unrelated commands.
+
 Context:
 --------
 {context_str}
@@ -80,8 +84,7 @@ User question:
 --------------
 {question}
 
-Answer in a clear, step-by-step way, using simple language and concrete examples.
-If relevant, reference the snippets you used by their [index] (e.g., [0], [2]).
+Answer by quoting ONLY the exact matching line from the relevant context. Reference snippets with [index] (e.g., [0]).
 """
 
     return prompt
